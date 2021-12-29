@@ -2,8 +2,8 @@ package com.spotify.oauth2.test;
 
 import com.spotify.oauth2.api.applicationApi.PlaylistApi;
 import com.spotify.oauth2.pojo.Error;
-import com.spotify.oauth2.pojo.Playlist;
 
+import com.spotify.oauth2.pojo.Playlist;
 import com.spotify.oauth2.utils.DataLoader;
 import io.restassured.response.Response;
 import org.testng.annotations.Test;
@@ -62,13 +62,14 @@ public class PlaylistTest {
         assertions.assertError(response.as(Error.class), 401, "Invalid access token");
     }
 
-
     public Playlist playlistBuilder(String name, String description, boolean _public) {
-        return new Playlist().
-                setName(name).
-                setDescription(description).
-                setPublic(_public);
+        return Playlist.builder().
+                name(name).
+                description(description).
+                Public(_public).
+                build();
     }
+
     public void assertPlaylist(Playlist responsePlaylist, Playlist requestPlaylist) {
         assertThat(responsePlaylist.getName(), equalTo(requestPlaylist.getName()));
         assertThat(responsePlaylist.getDescription(), equalTo(requestPlaylist.getDescription()));

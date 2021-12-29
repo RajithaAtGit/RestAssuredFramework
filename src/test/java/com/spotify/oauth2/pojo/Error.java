@@ -2,40 +2,23 @@ package com.spotify.oauth2.pojo;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import lombok.Builder;
+import lombok.Value;
+import lombok.extern.jackson.Jacksonized;
 
+@Value
+@Builder
+@Jacksonized
 @JsonInclude(JsonInclude.Include.NON_NULL)
-public class Error{
+public class Error {
 
-	@JsonProperty("error")
-	private Error error;
+    @JsonProperty("error")
+    Error error;
 
-	@JsonProperty("message")
-	private String message;
+    @JsonProperty("message")
+    String message;
 
-	@JsonProperty("status")
-	private int status;
+    @JsonProperty("status")
+    int status;
 
-	public void setError(Error error){
-		this.error = error;
-	}
-
-	public Error getError(){
-		return error;
-	}
-
-	public void setMessage(String message){
-		this.message = message;
-	}
-
-	public String getMessage(){
-		return message;
-	}
-
-	public void setStatus(int status){
-		this.status = status;
-	}
-
-	public int getStatus(){
-		return status;
-	}
 }
