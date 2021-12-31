@@ -26,6 +26,7 @@ public class TokenManager {
                 System.out.println(" \n\nToken is not Expire");
             }
         } catch (Exception e) {
+            e.printStackTrace();
             throw new RuntimeException("ABORT!! Failed to get token");
         }
         return access_token;
