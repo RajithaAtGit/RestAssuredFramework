@@ -12,7 +12,7 @@ public class TokenManager {
     private static String access_token;
     private static Instant expiry_time;
 
-    public static String getToken() {
+    public synchronized static String getToken() {
         try {
             if (access_token == null || Instant.now().isAfter(expiry_time)) {
                 System.out.println("Renewing token ....");
@@ -23,7 +23,7 @@ public class TokenManager {
                 expiry_time = Instant.now().plusSeconds(expiryDurationInSeconds - 300);
 
             }else {
-                System.out.println("\n\n\n\nToken is not Expire");
+                System.out.println(" \n\nToken is not Expire");
             }
         } catch (Exception e) {
             throw new RuntimeException("ABORT!! Failed to get token");

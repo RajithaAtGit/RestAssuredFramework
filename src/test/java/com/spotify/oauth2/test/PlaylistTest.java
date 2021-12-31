@@ -1,5 +1,7 @@
 package com.spotify.oauth2.test;
 
+import com.spotify.oauth2.api.Assertions;
+import com.spotify.oauth2.api.StatusCode;
 import com.spotify.oauth2.api.applicationApi.PlaylistApi;
 import com.spotify.oauth2.pojo.Error;
 
@@ -10,12 +12,14 @@ import io.restassured.response.Response;
 
 import org.testng.annotations.Test;
 
+import static com.spotify.oauth2.utils.FackerUtils.generateDescription;
+import static com.spotify.oauth2.utils.FackerUtils.generateName;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
 
 @Epic("Spotify Oauth 2.0")
 @Feature("Playlist API")
-public class PlaylistTest {
+public class PlaylistTest  extends BaseTest{
 
     private final Assertions assertions = new Assertions();
 
@@ -27,9 +31,9 @@ public class PlaylistTest {
     @Test(description = "Should be able to create a playlist on Spotify Account")
     @Description("This test case is used to check, Whether api can perform playlist creation with valid access token")
     public void testCreateAPlaylist() {
-        Playlist requestPlaylist = playlistBuilder("New Playlist 001", "New Playlist 001 form POJO Class", false);
+        Playlist requestPlaylist = playlistBuilder(generateName(), generateDescription(),false);
         Response response = PlaylistApi.post(requestPlaylist);
-        assertions.assertStatusCode(response.statusCode(), 201);
+        assertions.assertStatusCode(response.statusCode(), StatusCode.CODE_201);
         assertPlaylist(response.as(Playlist.class), requestPlaylist);
     }
 
@@ -38,9 +42,9 @@ public class PlaylistTest {
     @Test(description = "Should be able to fetch a playlist form Spotify ")
     @Description("This test case is used to check, Whether api can fetch a playlist with valid access token")
     public void testGetAPlaylist() {
-        Playlist requestPlaylist = playlistBuilder("Updated Playlist 30", "Updated by POJOs", false);
+        Playlist requestPlaylist = playlistBuilder("New Playlist 001", "New Playlist 001 form POJO Class", false);
         Response response = PlaylistApi.get(DataLoader.getInstance().getPlaylistId());
-        assertions.assertStatusCode(response.statusCode(), 200);
+        assertions.assertStatusCode(response.statusCode(), StatusCode.CODE_200);
         assertPlaylist(response.as(Playlist.class), requestPlaylist);
     }
 
@@ -50,9 +54,9 @@ public class PlaylistTest {
     @Test(description = "Should be able to update a playlist details")
     @Description("This test case is used to check, Whether api can update a playlist details  with valid access token")
     public void testUpdatePlaylistDetails() {
-        Playlist requestPlaylist = playlistBuilder("Updated Playlist 30", "Updated by POJOs", false);
+        Playlist requestPlaylist = playlistBuilder(generateName(), generateDescription(), false);
         Response response = PlaylistApi.update(requestPlaylist, DataLoader.getInstance().getUpdatePlaylistId());
-        assertions.assertStatusCode(response.statusCode(), 200);
+        assertions.assertStatusCode(response.statusCode(), StatusCode.CODE_200);
     }
 
     @Story("Create a Playlist in Spotify Account using Web API")
@@ -62,10 +66,10 @@ public class PlaylistTest {
     @Test(description = "Should not be able to create a playlist without a name")
     @Description("This test case is used to check, Whether api can not create a playlist without a name and with valid access token ")
     public void testShouldNotBeAbleToCreatePlaylistWithoutAName() {
-        Playlist requestPlaylist = playlistBuilder("", "created by postman", false);
+        Playlist requestPlaylist = playlistBuilder("", generateDescription(), false);
         Response response = PlaylistApi.post(requestPlaylist);
-        assertions.assertStatusCode(response.statusCode(), 400);
-        assertions.assertError(response.as(Error.class), 400, "Missing required field: name");
+        assertions.assertStatusCode(response.statusCode(), StatusCode.CODE_400);
+        assertions.assertError(response.as(Error.class), StatusCode.CODE_400);
     }
 
     @Story("Create a Playlist in Spotify Account using Web API")
@@ -75,10 +79,10 @@ public class PlaylistTest {
     @Test(description = "Should not be able to create a playlist with expired access token")
     @Description("This test case is used to check, Whether api can not create a playlist with expired access token")
     public void testShouldNotBeAbleToCreateAPlaylistWithExpiredAccessToken() {
-        Playlist requestPlaylist = playlistBuilder("playlist 40", "created by postman", false);
+        Playlist requestPlaylist = playlistBuilder(generateName(), generateDescription(), false);
         Response response = PlaylistApi.post(requestPlaylist, DataLoader.getInstance().getExpiredAccessToken());
-        assertThat(response.statusCode(), equalTo(401));
-        assertions.assertError(response.as(Error.class), 401, "The access token expired");
+        assertions.assertStatusCode(response.statusCode(),StatusCode.CODE_401_E);
+        assertions.assertError(response.as(Error.class), StatusCode.CODE_401_E);
     }
 
     @Story("Create a Playlist in Spotify Account using Web API")
@@ -88,10 +92,10 @@ public class PlaylistTest {
     @Test(description = "Should not be able to create a playlist with invalid access token")
     @Description("This test case is used to check, Whether api can not create a playlist with invalid access token")
     public void testShouldNotBeAbleToCreateAPlaylistWithInvalidAccessToken() {
-        Playlist requestPlaylist = playlistBuilder("playlist 40", "created by postman", false);
+        Playlist requestPlaylist = playlistBuilder(generateName(), generateDescription(), false);
         Response response = PlaylistApi.post(requestPlaylist, DataLoader.getInstance().getInvalidAccessToken());
-        assertions.assertStatusCode(response.statusCode(), 401);
-        assertions.assertError(response.as(Error.class), 401, "Invalid access token");
+        assertions.assertStatusCode(response.statusCode(), StatusCode.CODE_401_I);
+        assertions.assertError(response.as(Error.class), StatusCode.CODE_401_I);
     }
 
     @Step

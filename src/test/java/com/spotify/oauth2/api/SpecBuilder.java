@@ -14,7 +14,9 @@ import static io.restassured.RestAssured.baseURI;
 public class SpecBuilder {
 
     public static RequestSpecification getRequestSpec(String access_token) {
-        baseURI = "https://api.spotify.com";
+
+//        baseURI = "https://api.spotify.com";
+        baseURI=System.getProperty("BASE_URL");
         basePath = "/v1";
         return new RequestSpecBuilder().
                 addHeader("Authorization", "Bearer " + access_token).
@@ -26,7 +28,8 @@ public class SpecBuilder {
 
     public static RequestSpecification getAccountRequestSpec() {
         return new RequestSpecBuilder().
-                setBaseUri("https://accounts.spotify.com").
+                setBaseUri(System.getProperty("ACCOUNT_BASE_URI")).
+//                setBaseUri("https://accounts.spotify.com").
                 setContentType(ContentType.URLENC).
                 addFilter(new AllureRestAssured()).
                 log(LogDetail.ALL).
@@ -39,3 +42,8 @@ public class SpecBuilder {
                 log(LogDetail.ALL).build();
     }
 }
+
+/*
+*
+*        mvn test -DBASE_URL="https://api.spotify.com" -DACCOUNT_BASE_URI="https://accounts.spotify.com"
+* */
